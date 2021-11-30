@@ -10,20 +10,16 @@ use GuzzleHttp\Client;
 class ExternalApiCall 
 {
    
-    function __construct()
+    function __construct(Client $client)
     {
-        $this->httpClient = new Client();
+        $this->httpClient = $client;
     }
 
     public function call($endpoint, $method = 'get', $headers = null , $body = null , $body_key = 'json' , $outputDebug = false)
     {
 
-        if (!isset($body_key)) {
-            $body_key = 'json';
-        }
         try{
-            if($body)
-            {
+            if($body){
 
                 $main_data = [
                     'headers' => $headers,
@@ -34,37 +30,19 @@ class ExternalApiCall
                     'headers' => $headers,
                 ];
             }
-            try{
-         
 
-                $response = $this->httpClient->$method($endpoint , $main_data);
+            $response = $this->httpClient->$method($endpoint , $main_data);
 
-                $responseHeaders = $response->getHeaders();
-                $responseBody = $response->getBody();   
-                $responseStatusCode = $response->getStatusCode();
-            }catch(Exception $e)
-            {
-                dd($e->getMessage());
-            }
-      
-
+            $responseHeaders = $response->getHeaders();
+            $responseBody = $response->getBody();   
+            $responseStatusCode = $response->getStatusCode();
+        
             return collect(json_decode($responseBody->getContents(), true));
 
         } catch (\Throwable $e)
         {
-            try{
-                $response = null;
-                $responseHeaders = $e->getResponse()->getHeaders();
-                $responseBody = $e->getResponse()->getBody()->getContents();
-                $responseStatusCode = null;
-
-            } catch (\Throwable $e)
-            {
-                $response = null;
-                $responseHeaders = null;
-                $responseBody = $e->getMessage();
-                $responseStatusCode = null;
-            }
+         
+            throw new Exception($e->getMessage());
 
         }
 
