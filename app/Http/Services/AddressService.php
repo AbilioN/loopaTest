@@ -8,11 +8,11 @@ class AddressService
     private $url;
     private $format;
 
-    function __construct()
+    function __construct(ExternalApiCall $api)
     {
         $this->url = 'https://viacep.com.br/ws/';
         $this->format = 'json';
-        $this->api = new ExternalApiCall();
+        $this->api = $api;
 
     }
 

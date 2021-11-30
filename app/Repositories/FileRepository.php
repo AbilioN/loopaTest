@@ -123,7 +123,7 @@ class FileRepository
                 $installment['date'] = $installmentDate;
                 $installments[] = $installment;
             }
-            
+
             $newProcessedSale['installments'] = $installments;
 
             $processedSales[] = $newProcessedSale;
